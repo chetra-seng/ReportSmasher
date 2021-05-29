@@ -144,8 +144,8 @@ public class App
     
     class ImportItemListener implements ActionListener{
     	public void actionPerformed(ActionEvent ev) {
+    		resetValue(); // Reset everything before adding another entry
     		chooseFile(); // Generate the result
-    		result.setText(""); // Clear the old result first
     		result.append("Line VIP: " + lineVip + "\n");
     		result.append("Line 1777: " + line1777 + "\n");
     		result.append("Line AP: " + lineAp + "\n");
@@ -164,5 +164,14 @@ public class App
 		readTheFile(chooser.getSelectedFile()); // read file from chooser
 		writeTheFile(); // write the file
 		smash(); // process the fle
+    }
+    
+    private void resetValue() {
+    	result.setText(""); // Clear the old result first
+    	// Reset all the values to 0
+    	lineVip = 0;
+    	line1777 = 0;
+    	lineAp = 0;
+    	lineEmoney = 0;
     }
 }
