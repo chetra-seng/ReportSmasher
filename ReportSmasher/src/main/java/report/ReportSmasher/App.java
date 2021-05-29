@@ -3,21 +3,60 @@ package report.ReportSmasher;
 import org.apache.commons.csv.*;
 import java.io.*;
 import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import java.awt.*;
+import java.awt.event.*;
+
 public class App 
 {
-	ArrayList<String> text;
-	File file;
+	// gui variables
+	private ArrayList<String> text;
+	private File file;
+	private JTextArea result;
+	private JFrame frame;
+	// Process variables
+	private long lineVip = 0;
+	private long line1777 = 0;
+	private long lineAp = 0;
+	private long lineEmoney = 0;
+	private String waitTime = "WAITING DURATION";
+	
     public static void main( String[] args )
     {
         App test = new App();
-        test.readTheFile();
-        test.writeTheFile();
-        test.smash();
+        test.go();
     }
     
-    public void readTheFile() {
+    public void go() {
+    	buildGui();
+    }
+    
+    private void buildGui() {
+    	frame = new JFrame("Report Smasher");
+    	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	JPanel mainPanel = new JPanel();
+    	result = new JTextArea(5, 20);
+    	result.setEditable(false);
+    	mainPanel.add(result);
+    	frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
+    	
+    	// Adding a menu
+    	JMenuBar menuBar = new JMenuBar();
+    	JMenu newMenu = new JMenu("File");
+    	JMenuItem importItem = new JMenuItem("Import");
+    	importItem.addActionListener(new ImportItemListener());
+    	newMenu.add(importItem);
+    	menuBar.add(newMenu);
+    	frame.setJMenuBar(menuBar);
+    	
+    	frame.setSize(300, 300);
+    	frame.setVisible(true);
+    }
+    
+    private void readTheFile(File readFile) {
     	try {
-    		File readFile = new File("C:/Users/Chetra/Downloads/call-logs_202105270840.csv");
     		FileReader r = new FileReader(readFile);
     		BufferedReader reader = new BufferedReader(r);
     		String line = null;
@@ -32,7 +71,7 @@ public class App
     	}
     }
     
-    public void writeTheFile() {
+    private void writeTheFile() {
     	// Remove 7 lines from array list
     	for(int i=0; i<7; i++) {
     		text.remove(0);
@@ -41,7 +80,7 @@ public class App
     	text.remove(0); // Remove header from array list
     	
     	try {
-    		file = new File("E:/temp.csv");
+    		file = new File("d:/temp.csv");
     		FileWriter w = new FileWriter(file);
     		BufferedWriter writer = new BufferedWriter(w);
     		// Add all the headers
@@ -63,15 +102,10 @@ public class App
     	}
     }
     
-    public void smash() {
+    private void smash() {
     	try {
     		BufferedReader r = new BufferedReader(new FileReader(file));
     		CSVParser parser = new CSVParser(r, CSVFormat.DEFAULT.withHeader().withTrim());
-    		long lineVip = 0;
-    		long line1777 = 0;
-    		long lineAp = 0;
-    		long lineEmoney = 0;
-    		String waitTime = "WAITING DURATION";
     		for(CSVRecord record : parser) {
     			if(!record.get("AGENT").isBlank()) {
     				if(record.get("QUEUE NAME").contains("Line VIP")) {
@@ -97,6 +131,7 @@ public class App
     		System.out.println("AP: " + lineAp);
     		System.out.println("Emoney: " + lineEmoney);
     		r.close();
+    		parser.close();
     		boolean deleted = file.delete();
     		if(deleted) {
     			System.out.println("File Deleted");
@@ -105,5 +140,29 @@ public class App
     	catch(Exception ex) {
     		ex.printStackTrace();
     	}
+    }
+    
+    class ImportItemListener implements ActionListener{
+    	public void actionPerformed(ActionEvent ev) {
+    		chooseFile(); // Generate the result
+    		result.setText(""); // Clear the old result first
+    		result.append("Line VIP: " + lineVip + "\n");
+    		result.append("Line 1777: " + line1777 + "\n");
+    		result.append("Line AP: " + lineAp + "\n");
+    		result.append("Line Emoney: " + lineEmoney);
+    	}
+    }
+    
+    private void chooseFile() {
+    	JFileChooser chooser = new JFileChooser("c:/Users/chetras/Downloads");
+    	// Adding filter
+    	FileNameExtensionFilter filter = new FileNameExtensionFilter("*csv", "csv");
+		chooser.setDialogTitle("Choose a csv file"); // set dialog title
+		chooser.setAcceptAllFileFilterUsed(false); // set all type file to false
+		chooser.addChoosableFileFilter(filter); // add filter
+		chooser.showOpenDialog(frame);
+		readTheFile(chooser.getSelectedFile()); // read file from chooser
+		writeTheFile(); // write the file
+		smash(); // process the fle
     }
 }
