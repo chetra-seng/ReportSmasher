@@ -25,8 +25,8 @@ public class App
 	
     public static void main( String[] args )
     {
-        App test = new App();
-        test.go();
+        AppLauncher test = new AppLauncher();
+        test.start();
     }
     
     public void go() {
@@ -93,9 +93,9 @@ public class App
     			printer.printRecord(part[0], part[1], part[2], part[3], part[4], part[5], part[6], part[7],
     					part[8], part[9], part[10], part[11], part[12], part[13], part[14], part[15], part[16],
     					part[17], part[18], part[19]);
+    			printer.flush();
     		}
-    		printer.flush();
-    		w.close();
+    		printer.close();
     	}
     	catch(Exception ex) {
     		ex.printStackTrace();
