@@ -15,8 +15,10 @@ public class AppLauncher {
 	private JFrame frame;
 	private String defaultLocation = "C:/Users/" + System.getProperty("user.name") + "/Downloads";
 	private long[] waitTime;
+	private long[] line;
 	private long[] social;
 	private RecordFile fileCSV;
+	private LineFile fileLine;
 	private SocialFile fileSocial;
 	
 	public void start() {
@@ -76,6 +78,7 @@ public class AppLauncher {
 		
 		// Adding action listener
 		fileButton[0].addActionListener(new RecordFileListener());
+		fileButton[1].addActionListener(new LineFileListener());
 		fileButton[2].addActionListener(new SocialFileListener());
 		startButton.addActionListener(new StartButtonListener());
 		
@@ -107,6 +110,15 @@ public class AppLauncher {
 		}
 	}
 	
+	class LineFileListener implements ActionListener{
+		public void actionPerformed(ActionEvent ev) {
+			File f = showDialog("Report Percentage File", "xlsx");
+			fileButton[1].setText("Selected");
+			fileLabel[1].setText(f.getName());
+			fileLine = new LineFile(f);
+		}
+	}
+	
 	class SocialFileListener implements ActionListener{
 		public void actionPerformed(ActionEvent ev) {
 			File f = showDialog("Report Social File", "xls");
@@ -124,10 +136,16 @@ public class AppLauncher {
 				result.append("Result: " + waitTime[i] + "\n");
 			}
 			
+			line = fileLine.readLineFile();
+			for(int i=0; i<line.length; i++) {
+				result.append(line[i] + "\n");
+			}
+			
 			social = fileSocial.readSocialFile();
 			for(int i=0; i<social.length; i++) {
 				result.append(social[i] + "\n");
 			}
+			
 		}
 	}
 }
