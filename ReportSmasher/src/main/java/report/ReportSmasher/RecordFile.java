@@ -92,13 +92,16 @@ public class RecordFile {
     				else if(record.get("QUEUE NAME").contains("Line eMoney 868")) {
     					result[3] = result[3] + Integer.parseInt(record.get(waitTime));
     				}
-    				else if(record.get("QUEUE NAME").contains("Quece Video")) {
+    				else if(record.get("QUEUE NAME").contains("Queue video")) {
     					result[4] = result[4] + Integer.parseInt(record.get(waitTime));
     				}
     			}
 			}
 			parser.close();
 			boolean deleted = fileToWrite.delete();
+			if(deleted) {
+				System.out.print("temp.csv was deleted");
+			}
 		}
 		
 		catch(Exception ex) {

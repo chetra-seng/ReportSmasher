@@ -12,10 +12,12 @@ public class AppLauncher {
 	private JTextArea result;
 	private JButton[] fileButton;
 	private JLabel[] fileLabel;
-	private RecordFile fileCSV;
 	private JFrame frame;
 	private String defaultLocation = "C:/Users/" + System.getProperty("user.name") + "/Downloads";
 	private long[] waitTime;
+	private long[] social;
+	private RecordFile fileCSV;
+	private SocialFile fileSocial;
 	
 	public void start() {
 		frame = new JFrame("Report Smasher");
@@ -69,12 +71,13 @@ public class AppLauncher {
 		
 		// Creating bottom Panel
 		JPanel bottomPanel = new JPanel();
-		JButton resetButton = new JButton("Start");
-		bottomPanel.add(resetButton);
+		JButton startButton = new JButton("Start");
+		bottomPanel.add(startButton);
 		
 		// Adding action listener
-		
 		fileButton[0].addActionListener(new RecordFileListener());
+		fileButton[2].addActionListener(new SocialFileListener());
+		startButton.addActionListener(new StartButtonListener());
 		
 		mainPanel.add(BorderLayout.NORTH, topPanel);
 		mainPanel.add(BorderLayout.CENTER, bottomPanel);
@@ -83,12 +86,13 @@ public class AppLauncher {
 		frame.setVisible(true);
 	}
 	
-	private File showDialog() {
+	// File chooser pop up
+	private File showDialog(String message, String fileType) {
 		JFileChooser chooser = new JFileChooser(defaultLocation);
 		chooser.setAcceptAllFileFilterUsed(false); // Don't accept all type of file
-		chooser.setDialogTitle("Select Export File");
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file", "csv");
-		chooser.addChoosableFileFilter(filter);
+		chooser.setDialogTitle("Select a File");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(message, fileType);
+		chooser.addChoosableFileFilter(filter); // Set file filter
 		chooser.showOpenDialog(frame);
 		
 		return(chooser.getSelectedFile());
@@ -96,14 +100,33 @@ public class AppLauncher {
 	
 	class RecordFileListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {
-			File f = showDialog();
+			File f = showDialog("CSV File", "csv");
 			fileButton[0].setText("Selected");
 			fileLabel[0].setText(f.getName());
 			fileCSV = new RecordFile(f);
+		}
+	}
+	
+	class SocialFileListener implements ActionListener{
+		public void actionPerformed(ActionEvent ev) {
+			File f = showDialog("Report Social File", "xls");
+			fileSocial = new SocialFile(f);
+			fileButton[2].setText("Selected");
+			fileLabel[2].setText(f.getName());
+		}
+	}
+	
+	class StartButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent ev) {
 			fileCSV.writeFile();
 			waitTime = fileCSV.getData();
 			for(int i=0; i<waitTime.length; i++) {
 				result.append("Result: " + waitTime[i] + "\n");
+			}
+			
+			social = fileSocial.readSocialFile();
+			for(int i=0; i<social.length; i++) {
+				result.append(social[i] + "\n");
 			}
 		}
 	}
