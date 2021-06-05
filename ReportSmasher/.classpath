@@ -24,14 +24,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/chetras/.m2/repository/org/apache/poi/poi-ooxml/4.1.1/poi-ooxml-4.1.1.jar" sourcepath="C:/Users/Chetra/.m2/repository/org/apache/poi/poi-ooxml/4.1.1/poi-ooxml-4.1.1-sources.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.apache.poi"/>
-			<attribute name="maven.artifactId" value="poi-ooxml"/>
-			<attribute name="maven.version" value="4.1.1"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Chetra/.m2/repository/org/apache/poi/poi-ooxml/4.1.1/poi-ooxml-4.1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

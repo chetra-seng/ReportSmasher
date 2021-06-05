@@ -15,7 +15,6 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -288,11 +287,11 @@ public class AppLauncher {
 				FileOutputStream os = new FileOutputStream(fileReport);
 				workbook.write(os);
 				os.close();
-				XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 			}
 			catch(Exception ex) {
 				ex.printStackTrace();
 			}
+			XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 		}
 	}
 }
