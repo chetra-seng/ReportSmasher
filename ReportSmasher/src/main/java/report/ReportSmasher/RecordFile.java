@@ -43,6 +43,7 @@ public class RecordFile {
 				writer.flush();
 			}
 			writer.close();
+			newFileData.clear();
 		}
 		
 		catch(Exception ex) {
