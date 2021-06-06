@@ -38,64 +38,71 @@ public class AppLauncher {
 	public void start() {
 		frame = new JFrame("Report Smasher");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		JPanel background = new JPanel();
+		background.setLayout(new BoxLayout(background, BoxLayout.Y_AXIS));
+		background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
+		// Creating a main panel using box layout
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		background.add(mainPanel); // Adding main panel to background
 		
-		// Creating a grid to hold labels and buttons
-		JPanel gridPanel = new JPanel();
-		GridLayout grid = new GridLayout(4, 2);
-		grid.setVgap(5);
-		grid.setHgap(5);
-		gridPanel.setLayout(grid);
+		// Create a label and button Panel
+		JPanel buttonAndLabel = new JPanel(new BorderLayout());
+		buttonAndLabel.setBorder(BorderFactory.createEmptyBorder(0, 70, 0, 20));
+		mainPanel.add(buttonAndLabel); // Adding it to main panel
+		
+		// Create a button panel and add buttons to it
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 		fileButton = new JButton[4];
 		for(int i = 0; i<4; i++) {
 			fileButton[i] = new JButton("Select");
+			buttonPanel.add(fileButton[i]);
+			if(i<3) buttonPanel.add(Box.createRigidArea(new Dimension(0, 7))); // Adding empty space
 		}
+		buttonAndLabel.add(BorderLayout.WEST, buttonPanel);
 		
+		// Create a label panel and add file label to it
+		JPanel fileLabelPanel = new JPanel();
+		fileLabelPanel.setLayout(new BoxLayout(fileLabelPanel, BoxLayout.Y_AXIS));
+		fileLabelPanel.setBorder(BorderFactory.createEmptyBorder(4, 20, 0, 0));
 		fileLabel = new JLabel[4];
 		for(int i = 0; i<4; i++) {
 			fileLabel[i] = new JLabel("");
-			gridPanel.add(fileButton[i]);
-			gridPanel.add(fileLabel[i]);
+			fileLabelPanel.add(fileLabel[i]);
+			if(i<3) fileLabelPanel.add(Box.createRigidArea(new Dimension(0, 17)));
 		}
+		buttonAndLabel.add(BorderLayout.CENTER, fileLabelPanel);
 		
-		// Setting Label
-		fileLabel[0].setText("System Export File");
-		fileLabel[1].setText("Report All Lines File");
-		fileLabel[2].setText("Report Social File");
-		fileLabel[3].setText("Final Report File");
+		setAllFileLabel(); // Setting Label
 		
-		// Creating the result text box
+		
+		// Create a date picker and add it to main panel
+		JPanel datePanel = new JPanel(new BorderLayout());
+		date = new JDateChooser();
+		JLabel dateLabel = new JLabel("Select a date: ");
+		datePanel.add(BorderLayout.WEST, dateLabel);
+		datePanel.add(BorderLayout.CENTER, date);
+		mainPanel.add(datePanel);
+		
+		// Creating the result text box and add it to main panel
 		result = new JTextArea(7, 40);
 		result.setEditable(false);
 		JScrollPane scroller = new JScrollPane(result);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		mainPanel.add(scroller);
 		
-		// Create a date picker
-		JPanel datePanel = new JPanel(new BorderLayout());
-		date = new JDateChooser();
-		JLabel dateLabe = new JLabel("Select a date: ");
-		datePanel.add(BorderLayout.WEST, dateLabe);
-		datePanel.add(BorderLayout.CENTER, date);
-		
-		// Creating the top panel
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-		JPanel t = new JPanel(); // Create a new panel to host grid
-		t.add(gridPanel); // add the newly created panel
-		topPanel.add(t);
-		topPanel.add(datePanel);
-		JPanel resultPanel = new JPanel();
-		resultPanel.add(scroller);
-		resultPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-		topPanel.add(resultPanel);
-		
-		// Creating bottom Panel
-		JPanel bottomPanel = new JPanel();
+		// Create a start button panel and add it to background
+		JPanel startPanel = new JPanel();
+		startPanel.setLayout(new BoxLayout(startPanel, BoxLayout.X_AXIS));
 		JButton startButton = new JButton("Start");
-		bottomPanel.add(startButton);
+		JButton resetButton = new JButton("Reset"); // Add a reset button
+		startPanel.add(startButton);
+		startPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Create an empty space
+		startPanel.add(resetButton);
+		background.add(startPanel);
 		
 		// Adding action listener
 		fileButton[0].addActionListener(new RecordFileListener());
@@ -104,11 +111,16 @@ public class AppLauncher {
 		fileButton[3].addActionListener(new ReportFileListener());
 		startButton.addActionListener(new StartButtonListener());
 		
-		mainPanel.add(BorderLayout.NORTH, topPanel);
-		mainPanel.add(BorderLayout.CENTER, bottomPanel);
-		frame.getContentPane().add(mainPanel);
-		frame.setBounds(100, 100, 500, 400);
+		frame.getContentPane().add(background);
+		frame.setBounds(100, 100, 400, 360);
 		frame.setVisible(true);
+	}
+	
+	private void setAllFileLabel() {
+		fileLabel[0].setText("System Export File");
+		fileLabel[1].setText("Report All Lines File");
+		fileLabel[2].setText("Report Social File");
+		fileLabel[3].setText("Final Report File");
 	}
 	
 	// File chooser pop up
@@ -133,21 +145,44 @@ public class AppLauncher {
 		return newCal;
 	}
 	
+	private void displayWaitTimeOrTotalLine(long list[]) {
+		result.setText(""); // Clear the old result first
+		result.append("Total Line VIP: " + list[0]);
+		result.append("\nTotal line mass: " + list[1]);
+		result.append("\nTotal line AP: " + list[2]);
+		result.append("\nTotal line eMoney: " + list[3]);
+		result.append("\nTotal line Video call: " + list[4]);
+	}
+	
+	private void displaySocial(long list[]) {
+		result.setText("");
+		result.append("Inbox total waiting time: " + list[0]);
+		result.append("\nTotal inbox: " + list[1]);
+		result.append("\nComment total waiting time: " + list[2]);
+		result.append("\nTotal comment: " + list[3]);
+	}
 	class RecordFileListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {
 			File f = showDialog("CSV File", "csv");
-			fileButton[0].setText("Selected");
 			fileLabel[0].setText(f.getName());
 			fileCSV = new RecordFile(f);
+			fileCSV.writeFile();
+			waitTime = fileCSV.getData();
+			displayWaitTimeOrTotalLine(waitTime);
+			String fileName = f.getName();
+			if(f.delete()) result.append("\n" + fileName + " was deleted");
 		}
 	}
 	
 	class LineFileListener implements ActionListener{
 		public void actionPerformed(ActionEvent ev) {
 			File f = showDialog("Report Percentage File", "xlsx");
-			fileButton[1].setText("Selected");
 			fileLabel[1].setText(f.getName());
 			fileLine = new LineFile(f);
+			line = fileLine.readLineFile();
+			displayWaitTimeOrTotalLine(line);
+			String fileName = f.getName();
+			if(f.delete()) result.append("\n" + fileName + " was deleted");
 		}
 	}
 	
@@ -155,8 +190,11 @@ public class AppLauncher {
 		public void actionPerformed(ActionEvent ev) {
 			File f = showDialog("Report Social File", "xls");
 			fileSocial = new SocialFile(f);
-			fileButton[2].setText("Selected");
 			fileLabel[2].setText(f.getName());
+			social = fileSocial.readSocialFile();
+			displaySocial(social);
+			String fileName = f.getName();
+			if(f.delete()) result.append("\n" + fileName + " was deleted");
 		}
 	}
 	
@@ -164,7 +202,6 @@ public class AppLauncher {
 		public void actionPerformed(ActionEvent ev) {
 			reportfile = showDialog("Report To Update File", "xlsx");
 			// ff = new ReportFile(f); can't do it here
-			fileButton[3].setText("Selected");
 			fileLabel[3].setText(reportfile.getName());
 		}
 	}
@@ -172,26 +209,23 @@ public class AppLauncher {
 	class StartButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent ev) {
 			Date todayDate = getCorrectDateFormat().getTime(); // Get a date with 00:00:00 time
-			
-			fileCSV.writeFile();
-			waitTime = fileCSV.getData();
-			for(int i=0; i<waitTime.length; i++) {
-				result.append("Result: " + waitTime[i] + "\n");
-			}
-			
-			line = fileLine.readLineFile();
-			for(int i=0; i<line.length; i++) {
-				result.append(line[i] + "\n");
-			}
-			
-			social = fileSocial.readSocialFile();
-			for(int i=0; i<social.length; i++) {
-				result.append(social[i] + "\n");
-			}
-			
 			ff = new ReportFile(reportfile, todayDate);
 			ff.updateReportFile();
-			
+			result.setText("Update Successful...");
+		}
+	}
+	
+	class ResetButtonListener implements ActionListener{
+		public void actionPerformed(ActionEvent ev) {
+			for(int i=0; i<5; i++) {
+				line[i] = 0;
+				waitTime[i] = 0;
+			}
+			for(int i=0; i<4; i++) {
+				social[i] = 0;
+			}
+			setAllFileLabel();
+			result.setText("");
 		}
 	}
 	
