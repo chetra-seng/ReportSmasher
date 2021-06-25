@@ -312,7 +312,7 @@ public class AppLauncher {
 			numRow++; index++;
 			updateOneCell(numRow, numCol, index);
 		}
-		
+				
 		public void updateReportFile() {
 			int numCol = findCell();
 			updateWaitTimeAndLine(numCol);

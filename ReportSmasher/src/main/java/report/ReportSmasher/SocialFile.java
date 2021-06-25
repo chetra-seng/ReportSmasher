@@ -23,7 +23,7 @@ public class SocialFile {
 		try {
 			FileInputStream is = new FileInputStream(fileSocial);
 			HSSFWorkbook workbook = new HSSFWorkbook(is);
-			HSSFSheet sheet = workbook.getSheet("KPI Social");
+			HSSFSheet sheet = workbook.getSheetAt(0);
 			
 			// 1. Getting total comment in day at E24
 			Row row = sheet.getRow(numRow);

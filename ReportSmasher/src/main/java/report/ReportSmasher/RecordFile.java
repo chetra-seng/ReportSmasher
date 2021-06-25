@@ -77,25 +77,29 @@ public class RecordFile {
 			CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader().withTrim());
 			for(CSVRecord record : parser) {
 				if(!record.get("AGENT").isBlank()) {
-    				if(record.get("QUEUE NAME").contains("Line VIP")) {
-    					result[0] = result[0] + Integer.parseInt(record.get(waitTime));
+    				try {
+    					if(record.get("QUEUE NAME").contains("Line VIP")) {
+        					
+        					result[0] = result[0] + Integer.parseInt(record.get(waitTime));
+        				}
+        				else if(record.get("QUEUE NAME").contains("Line_1777_DCS_20210421") ||
+        						record.get("QUEUE NAME").contains("Line 17711_TS (New)") ||
+        						record.get("QUEUE NAME").contains("Line 0979097097_DCS") ||
+        						record.get("QUEUE NAME").contains("Line 0979097097_TS")) {
+        					result[1] = result[1] + Integer.parseInt(record.get(waitTime));
+        				}
+        				else if(record.get("QUEUE NAME").contains("Line 0976 097097 - ENGLISH") ||
+        						record.get("QUEUE NAME").contains("Line 0976 097097 - KHMER")) {
+        					result[2] = result[2] + Integer.parseInt(record.get(waitTime));
+        				}
+        				else if(record.get("QUEUE NAME").contains("Line eMoney 868")) {
+        					result[3] = result[3] + Integer.parseInt(record.get(waitTime));
+        				}
+        				else if(record.get("QUEUE NAME").contains("Queue video")) {
+        					result[4] = result[4] + Integer.parseInt(record.get(waitTime));
+        				}
     				}
-    				else if(record.get("QUEUE NAME").contains("Line_1777_DCS_20210421") ||
-    						record.get("QUEUE NAME").contains("Line 17711_TS (New)") ||
-    						record.get("QUEUE NAME").contains("Line 0979097097_DCS") ||
-    						record.get("QUEUE NAME").contains("Line 0979097097_TS")) {
-    					result[1] = result[1] + Integer.parseInt(record.get(waitTime));
-    				}
-    				else if(record.get("QUEUE NAME").contains("Line 0976 097097 - ENGLISH") ||
-    						record.get("QUEUE NAME").contains("Line 0976 097097 - KHMER")) {
-    					result[2] = result[2] + Integer.parseInt(record.get(waitTime));
-    				}
-    				else if(record.get("QUEUE NAME").contains("Line eMoney 868")) {
-    					result[3] = result[3] + Integer.parseInt(record.get(waitTime));
-    				}
-    				else if(record.get("QUEUE NAME").contains("Queue video")) {
-    					result[4] = result[4] + Integer.parseInt(record.get(waitTime));
-    				}
+    				catch(NumberFormatException ex) {}
     			}
 			}
 			parser.close();
