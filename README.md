@@ -26,8 +26,8 @@ This project used Maven build tools and also included other libraries such as
 * This project used JDK 11
 * Eclipse 2019-12
 
-** You might need to change the build path first before running the project. Replace my username, with your computer's username **
 ## How to change build path
+**You might need to change the build path first before running the project. Replace my username, with your computer's username**
 * Right click on the project
 * Choose build path -> Configure build path
 * In the Library tab, click on poi-ooxml-4.1.1.jar
