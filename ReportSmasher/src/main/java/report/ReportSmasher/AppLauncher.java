@@ -317,6 +317,7 @@ public class AppLauncher {
 			int numCol = findCell();
 			updateWaitTimeAndLine(numCol);
 			updateSocial(numCol);
+			workbook.setForceFormulaRecalculation(true);
 			try {
 				FileOutputStream os = new FileOutputStream(fileReport);
 				workbook.write(os);
@@ -325,7 +326,6 @@ public class AppLauncher {
 			catch(Exception ex) {
 				ex.printStackTrace();
 			}
-			XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 		}
 	}
 }
