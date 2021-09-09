@@ -5,7 +5,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -20,22 +19,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 public class AppLauncher {
 	private JTextArea result;
-	private JButton[] fileButton;
 	private JLabel[] fileLabel;
 	private JFrame frame;
-	private String defaultLocation = "C:/Users/" + System.getProperty("user.name") + "/Downloads";
+	private final String defaultLocation = "C:/Users/" + System.getProperty("user.name") + "/Downloads";
 	private long[] waitTime;
 	private long[] line;
 	private long[] social;
-	private RecordFile fileCSV;
-	private LineFile fileLine;
-	private SocialFile fileSocial;
-	private ReportFile ff;
-	private File reportfile;
+	private File reportFile;
 	
 	private JDateChooser date;
 	
 	public void start() {
+		JButton[] fileButton;
 		frame = new JFrame("Report Smasher");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel background = new JPanel();
@@ -110,6 +105,7 @@ public class AppLauncher {
 		fileButton[2].addActionListener(new SocialFileListener());
 		fileButton[3].addActionListener(new ReportFileListener());
 		startButton.addActionListener(new StartButtonListener());
+		resetButton.addActionListener(new ResetButtonListener());
 		
 		frame.getContentPane().add(background);
 		frame.setBounds(100, 100, 400, 360);
@@ -140,12 +136,11 @@ public class AppLauncher {
 		int dd = oldCal.get(Calendar.DAY_OF_MONTH);
 		int mm = oldCal.get(Calendar.MONTH);
 		int yy = oldCal.get(Calendar.YEAR);
-		Calendar newCal = new GregorianCalendar(yy, mm, dd);
 		
-		return newCal;
+		return new GregorianCalendar(yy, mm, dd);
 	}
 	
-	private void displayWaitTimeOrTotalLine(long list[]) {
+	private void displayWaitTimeOrTotalLine(long[] list) {
 		result.setText(""); // Clear the old result first
 		result.append("Total Line VIP: " + list[0]);
 		result.append("\nTotal line mass: " + list[1]);
@@ -154,7 +149,7 @@ public class AppLauncher {
 		result.append("\nTotal line Video call: " + list[4]);
 	}
 	
-	private void displaySocial(long list[]) {
+	private void displaySocial(long[] list) {
 		result.setText("");
 		result.append("Inbox total waiting time: " + list[0]);
 		result.append("\nTotal inbox: " + list[1]);
@@ -163,6 +158,7 @@ public class AppLauncher {
 	}
 	class RecordFileListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {
+			RecordFile fileCSV;
 			File f = showDialog("CSV File", "csv");
 			fileLabel[0].setText(f.getName());
 			fileCSV = new RecordFile(f);
@@ -176,6 +172,7 @@ public class AppLauncher {
 	
 	class LineFileListener implements ActionListener{
 		public void actionPerformed(ActionEvent ev) {
+			LineFile fileLine;
 			File f = showDialog("Report Percentage File", "xlsx");
 			fileLabel[1].setText(f.getName());
 			fileLine = new LineFile(f);
@@ -188,6 +185,7 @@ public class AppLauncher {
 	
 	class SocialFileListener implements ActionListener{
 		public void actionPerformed(ActionEvent ev) {
+			SocialFile fileSocial;
 			File f = showDialog("Report Social File", "xls");
 			fileSocial = new SocialFile(f);
 			fileLabel[2].setText(f.getName());
@@ -200,16 +198,17 @@ public class AppLauncher {
 	
 	class ReportFileListener implements ActionListener{
 		public void actionPerformed(ActionEvent ev) {
-			reportfile = showDialog("Report To Update File", "xlsx");
+			reportFile = showDialog("Report To Update File", "xlsx");
 			// ff = new ReportFile(f); can't do it here
-			fileLabel[3].setText(reportfile.getName());
+			fileLabel[3].setText(reportFile.getName());
 		}
 	}
 	
 	class StartButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent ev) {
+			ReportFile ff;
 			Date todayDate = getCorrectDateFormat().getTime(); // Get a date with 00:00:00 time
-			ff = new ReportFile(reportfile, todayDate);
+			ff = new ReportFile(reportFile, todayDate);
 			ff.updateReportFile();
 			result.setText("Update Successful...");
 		}

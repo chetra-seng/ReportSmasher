@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class SocialFile {
 	File fileSocial;
-	long result;
 	
 	public SocialFile(File fileSocial) {
 		this.fileSocial = fileSocial;
